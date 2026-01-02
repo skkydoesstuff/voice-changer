@@ -7,20 +7,26 @@ app = ct.CTk()
 app.geometry("720x480")
 app.title("Voice Changer")
 
+main = ct.CTkScrollableFrame(app, width=700, height=440)
+main.pack(padx=10, pady=10, fill="both", expand=True)
+
 state = {}
 
+def get_state(index):
+    return state.get(index)
+    
 def add_toggle(name):
-    var = ct.BooleanVar(master=app, value=False)
+    var = ct.BooleanVar(master=main, value=False)
     state[name] = False
 
     def on_change(*_):
         state[name] = var.get()
 
     var.trace_add("write", on_change)
-    ct.CTkSwitch(app, text=name, variable=var).pack()
+    ct.CTkSwitch(main, text=name, variable=var).pack()
 
 def add_entry(name, default):
-    var = ct.StringVar(master=app, value=str(default))
+    var = ct.StringVar(master=main, value=str(default))
     state[name] = default
 
     def on_change(*_):
@@ -31,5 +37,5 @@ def add_entry(name, default):
 
     var.trace_add("write", on_change)
 
-    ct.CTkEntry(app, textvariable=var).pack()
-    ct.CTkLabel(app, text=name).pack()
+    ct.CTkLabel(main, text=name).pack()
+    ct.CTkEntry(main, textvariable=var).pack()
