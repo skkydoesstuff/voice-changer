@@ -36,7 +36,12 @@ def callback(indata, outdata, frames, time, status):
     if gui.get_state("pitch"):
         processed = e.pitch_shift_phase_vocoder(processed, gui.get_state("pitch value"))
     if gui.get_state("wacky (kinda like an enderman)"):
-        processed = e.wacky(processed, gui.get_state("buffer time"))
+        buffer_time = gui.get_state("buffer time")
+        if buffer_time > 0:
+            processed = e.wacky(processed, buffer_time)
+        else:
+            buffer_time = 0.1
+            processed = e.wacky(processed, buffer_time)
 
     processed = np.clip(processed, -1.0, 1.0)
     outdata[:] = processed[:, None]
@@ -57,7 +62,6 @@ def main():
     gui.add_toggle("wacky (kinda like an enderman)")
     gui.add_entry("buffer time", 1)
 
-    
     threading.Thread(target=audio_thread, daemon=True).start()
     gui.app.mainloop()
 
