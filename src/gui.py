@@ -1,7 +1,7 @@
 import customtkinter as ct
 
 ct.set_appearance_mode("System")
-ct.set_default_color_theme("blue")
+ct.set_default_color_theme("dark-blue")
 
 app = ct.CTk()
 app.geometry("720x480")
