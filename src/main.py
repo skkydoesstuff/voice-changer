@@ -1,6 +1,7 @@
 import threading
 import sounddevice as sd
 import numpy as np
+from pathlib import Path
 import effects as e
 import gui
 
@@ -34,6 +35,11 @@ def stop_audio():
 
 def start_audio(input_dev, output_dev):
     global stream, SAMPLE_RATE
+
+    file_path = Path(__file__).resolve().parent / "settings.txt"
+
+    with open(file_path, 'w') as f:
+        f.write(f"{input_dev}\n{output_dev}")
 
     with audio_lock:
         stop_audio()
@@ -82,7 +88,6 @@ def callback(indata, outdata, frames, time, status):
 
     processed = np.clip(processed, -1.0, 1.0)
     outdata[:] = processed[:, None]
-
 
 def poll_devices():
     inp = gui.get_state("inputs")
