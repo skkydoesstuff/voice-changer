@@ -39,7 +39,7 @@ def start_audio(input_dev, output_dev):
         stop_audio()
 
         SAMPLE_RATE = get_samplerate(input_dev, output_dev)
-        e.setup(SAMPLE_RATE)
+        e.setup(SAMPLE_RATE, BLOCK)
 
         in_ch, out_ch = get_channels(input_dev, output_dev)
 
@@ -67,6 +67,8 @@ def callback(indata, outdata, frames, time, status):
     mono = indata[:, 0] if indata.shape[1] > 0 else np.zeros(frames)
     processed = mono
     
+    processed = e.sine_pitch_modulate(processed, 1, 10)
+    
     if gui.get_state("distortion"):
         processed = e.distortion_effect(processed, gui.get_state("distortion amount"))
     if gui.get_state("volume"):
@@ -74,14 +76,11 @@ def callback(indata, outdata, frames, time, status):
     if gui.get_state("reverb"):
         processed = e.simple_reverb(processed, gui.get_state("reverb amount"))
     if gui.get_state("pitch"):
-        processed = e.pitch_shift_phase_vocoder(processed, gui.get_state("pitch value"))
+        processed = e.pitch_shift_phase_vocoder(processed, gui.get_state("pitch value"), gui.get_state("chunk"))
     if gui.get_state("wacky (kinda like an enderman)"):
-        buffer_time = gui.get_state("buffer time")
-        if buffer_time > 0:
-            processed = e.wacky(processed, buffer_time)
-        else:
-            buffer_time = 0.1
-            processed = e.wacky(processed, buffer_time)
+        processed = e.wacky(processed, gui.get_state("buffer time"))
+    if gui.get_state("10 dollar microphone"):
+        processed = e.ten_dollar_mic(processed)
 
     processed = np.clip(processed, -1.0, 1.0)
     outdata[:] = processed[:, None]
@@ -145,9 +144,12 @@ def main():
 
     gui.add_toggle("pitch")
     gui.add_entry("pitch value", 1)
+    gui.add_entry("chunk", 512)
 
     gui.add_toggle("wacky (kinda like an enderman)")
     gui.add_entry("buffer time", 1)
+
+    gui.add_toggle("10 dollar microphone")
 
     gui.app.after(200, poll_devices)
     gui.app.mainloop()
