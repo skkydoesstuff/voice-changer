@@ -12,8 +12,6 @@ audio_lock = threading.Lock()
 
 last_devices = {"in": None, "out": None}
 
-# this function is bitchy and wants to be called first
-
 def get_channels(input_dev, output_dev):
     in_ch = min(1, sd.query_devices(input_dev)["max_input_channels"])
     out_ch = min(2, sd.query_devices(output_dev)["max_output_channels"])
