@@ -70,7 +70,7 @@ def start_audio(input_dev, output_dev):
         threading.Thread(target=run, daemon=True).start()
 
 def callback(indata, outdata, frames, time, status):
-    mono = indata[:, 0]
+    mono = indata[:, 0] if indata.shape[1] > 0 else np.zeros(frames)
     processed = mono
     
     if gui.get_state("distortion"):
