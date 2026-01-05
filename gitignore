@@ -2,4 +2,4 @@ __pycache__
 main.spec
 dist
 build
-src/__pycache__
+*.pyc
