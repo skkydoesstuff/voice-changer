@@ -89,7 +89,6 @@ def callback(indata, outdata, frames, time, status):
     processed = np.clip(processed, -1.0, 1.0)
     outdata[:] = processed[:, None]
 
-
 def poll_devices():
     inp = gui.get_state("inputs")
     out = gui.get_state("outputs")
@@ -109,10 +108,21 @@ def poll_devices():
     gui.app.after(200, poll_devices)
 
 def main():
+    hostapis = sd.query_hostapis()
+
+    wasapi_index = None
+    for i, api in enumerate(hostapis):
+        if api["name"] == "WASAPI":
+            wasapi_index = i
+            break
+
     inputs = []
     outputs = []
     
     for i, dev in enumerate(sd.query_devices()):
+        if dev["hostapi"] != wasapi_index:
+            continue
+
         if dev["max_input_channels"] > 0:
             inputs.append(f"{i}: {dev['name']}")
 
