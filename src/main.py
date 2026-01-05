@@ -4,10 +4,7 @@ import numpy as np
 import effects as e
 import gui
 
-INPUT_DEV = 43
-OUTPUT_DEV = 40
 BLOCK = 2048
-SAMPLE_RATE = int(sd.query_devices(OUTPUT_DEV, 'output')['default_samplerate'])
 
 stream = None
 stop_event = threading.Event()
