@@ -67,8 +67,6 @@ def callback(indata, outdata, frames, time, status):
     mono = indata[:, 0] if indata.shape[1] > 0 else np.zeros(frames)
     processed = mono
     
-    processed = e.sine_pitch_modulate(processed, 1, 10)
-    
     if gui.get_state("distortion"):
         processed = e.distortion_effect(processed, gui.get_state("distortion amount"))
     if gui.get_state("volume"):
