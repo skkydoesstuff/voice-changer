@@ -1,0 +1,1 @@
+.venv\Scripts\pyinstaller.exe --onefile src/main.py
