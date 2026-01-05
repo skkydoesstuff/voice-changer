@@ -39,3 +39,22 @@ def add_entry(name, default):
 
     ct.CTkLabel(main, text=name).pack()
     ct.CTkEntry(main, textvariable=var).pack()
+
+def add_dropdown(name, options, default=None):
+    if default is None:
+        default = options[0]
+
+    var = ct.StringVar(master=main, value=default)
+    state[name] = default
+
+    def on_change(*_):
+        state[name] = var.get()
+
+    var.trace_add("write", on_change)
+
+    ct.CTkLabel(main, text=name).pack()
+    ct.CTkOptionMenu(
+        main,
+        values=options,
+        variable=var
+    ).pack()
