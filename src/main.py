@@ -47,13 +47,19 @@ def callback(indata, outdata, frames, time, status):
     outdata[:] = processed[:, None]
 
 def main():
-    for i, dev in enumerate(sd.query_devices()):
-        if dev['max_input_channels'] > 0:
-            print(f"[{i}] {dev['name']} (inputs: {dev['max_input_channels']})")
+    inputs = []
+    outputs = []
 
+    
     for i, dev in enumerate(sd.query_devices()):
-        if dev['max_output_channels'] > 0:
-            print(f"[{i}] {dev['name']} (outputs: {dev["max_output_channels"]})")
+        if dev["max_input_channels"] > 0:
+            inputs.append(f"{i}: {dev['name']}")
+
+        if dev["max_output_channels"] > 0:
+            outputs.append(f"{i}: {dev['name']}")
+
+    gui.add_dropdown("inputs", inputs)
+    gui.add_dropdown("outputs", outputs)
 
     gui.add_toggle("distortion")
     gui.add_entry("distortion amount", 2)
